@@ -6,7 +6,10 @@ AM_CFLAGS = -O0 \
 
 bin_PROGRAMS = robbyGA
 
-robbyGA_SOURCES = main.c 
+robbyGA_SOURCES = main.c \
+                  consts.h \
+                  world.h world.c \
+                  utils.h utils.c
 
 robbyGA_LDFLAGS =
 robbyGA_LDADD =
