@@ -49,3 +49,15 @@ void print_world(FILE *stream, world *w){
       fprintf(stream, "\n");
     }
 }
+
+e_tile get_tile(world *w, size_t x, size_t y){
+  return w->tiles[x][y];
+}
+
+int clean_tile(world *w, size_t x, size_t y){
+  if(w->tiles[x][y] == dirt){
+      w->tiles[x][y] = clean;
+      return 1;
+    }
+  return 0;
+}

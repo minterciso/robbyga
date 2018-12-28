@@ -15,5 +15,7 @@ typedef struct world
 world * create_world(size_t x, size_t y);
 void destroy_world(world *w);
 void print_world(FILE *stream, world *w);
+e_tile get_tile(world *w, size_t x, size_t y);
+int clean_tile(world *w, size_t x, size_t y);
 
 #endif // WORLD_H
