@@ -4,6 +4,7 @@
 
 #include "world.h"
 #include "utils.h"
+#include "robby.h"
 
 const char *program_name;
 
@@ -50,7 +51,17 @@ int main(int argc, char *argv[]){
       fprintf(stderr,"[*] Unable to create world\n");
       return EXIT_FAILURE;
     }
+  size_t robby_x, robby_y;
+  robby_x = 0;
+  robby_y = 0;
+  place_robby(w, robby_x, robby_y);
+  move_robby(w, robby_x,   robby_y, robby_x+1, robby_y);
+  move_robby(w, robby_x+1, robby_y, robby_x+2, robby_y);
+  move_robby(w, robby_x+2, robby_y, robby_x+3, robby_y);
+  move_robby(w, robby_x+3, robby_y, robby_x+3, robby_y+1);
+  get_robby_position(w, &robby_x, &robby_y);
   print_world(stdout,w);
+  fprintf(stdout,"Robby (%ld,%ld)\n", robby_x, robby_y);
   destroy_world(w);
 
   return EXIT_SUCCESS;

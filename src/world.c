@@ -44,8 +44,16 @@ void print_world(FILE *stream, world *w){
   if(w == NULL)
     return;
   for(int i=0;i<w->y; i++){
-      for(int j=0;j<w->x;j++)
-        fprintf(stream,"%c", (w->tiles[i][j]==clean) ? ' ' : '*');
+      for(int j=0;j<w->x;j++){
+          char ch = ' ';
+          if(w->tiles[i][j] == clean)
+            ch = ' ';
+          else if(w->tiles[i][j] == dirt)
+            ch = '*';
+          else if(w->tiles[i][j] == robby  || w->tiles[i][j] == robby_dirt)
+            ch = 'R';
+          fprintf(stream,"%c", ch);
+        }
       fprintf(stream, "\n");
     }
 }
