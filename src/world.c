@@ -2,10 +2,38 @@
 
 #include <string.h>
 
+world * copy_world(world *w){
+  world *nw = NULL;
+  size_t len_row = sizeof(e_tile**)*w->cols;
+  size_t len_col = sizeof(e_tile*)*w->rows;
+
+  if((nw=(world*)malloc(sizeof(world)))==NULL){
+      perror("malloc");
+      return NULL;
+    }
+  memset(nw,'\0',sizeof(world));
+  nw->cols = w->cols;
+  nw->rows = w->rows;
+  if((nw->tiles=(e_tile**)malloc(len_row))==NULL){
+      perror("malloc");
+      destroy_world(w);
+    }
+  for(int i=0;i<nw->rows;i++){
+      if((nw->tiles[i] = (e_tile*)malloc(len_col))==NULL){
+          perror("malloc");
+          destroy_world(nw);
+          return NULL;
+        }
+      for(int j=0;j<nw->cols;j++)
+        nw->tiles[i][j] = w->tiles[i][j];
+    }
+  return nw;
+}
+
 world * create_world(int cols, int rows){
   world *w = NULL;
-  size_t len_row = sizeof(e_tile**)*cols;
-  size_t len_col = sizeof(e_tile*)*rows;
+  size_t len_row = sizeof(e_tile**)*rows;
+  size_t len_col = sizeof(e_tile*)*cols;
 
   if((w=(world*)malloc(sizeof(world)))==NULL){
       perror("malloc");
@@ -25,18 +53,17 @@ world * create_world(int cols, int rows){
           return NULL;
         }
       for(int j=0;j<cols;j++)
-        w->tiles[i][j] = rand() % (dirt + 1);
+        if(rand() % 2 == 1)
+          w->tiles[i][j] = dirt;
     }
 
   return w;
 }
 
 void destroy_world(world *w){
-  if(w->tiles != NULL){
-      for(int i=0;i<w->rows;i++)
-        free(w->tiles[i]);
-      free(w->tiles);
-    }
+  for(int i=0;i<w->rows;i++)
+    free(w->tiles[i]);
+  free(w->tiles);
   free(w);
 }
 
@@ -74,4 +101,20 @@ int clean_tile(world *w, int col, int row){
       return 1;
     }
   return 0;
+}
+
+void clear_world(world *w){
+  for(int i=0;i<w->rows;i++){
+      for(int j=0;j<w->cols;j++)
+        w->tiles[i][j] = clean;
+    }
+}
+
+void fill_world(world *w){
+  for(int i=0;i<w->rows;i++){
+      for(int j=0;j<w->cols;j++){
+          if(rand() % 2 == 1)
+            w->tiles[i][j] = dirt;
+        }
+    }
 }

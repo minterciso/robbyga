@@ -13,9 +13,12 @@ typedef struct world
 } world;
 
 world * create_world(int cols, int rows);
+world * copy_world(world *w);
 void destroy_world(world *w);
 void print_world(FILE *stream, world *w);
 e_tile get_tile(world *w, int col, int row);
 int clean_tile(world *w, int col, int row);
+void clear_world(world *w);
+void fill_world(world *w);
 
 #endif // WORLD_H

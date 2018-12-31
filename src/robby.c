@@ -1,4 +1,5 @@
 #include "robby.h"
+#include <assert.h>
 
 void place_robby(world *w, int col, int row){
   if(w->tiles[row][col] != wall)
@@ -6,27 +7,24 @@ void place_robby(world *w, int col, int row){
 }
 
 float move_robby(world *w, int col0, int row0, int col1, int row1){
-  e_tile original_tile = w->tiles[row0][col0];
   if(col1 < 0 || col1 > w->cols-1)
     return -5.0;
   if(row1 < 0 || row1 > w->rows-1)
     return -5.0;
-  if(w->tiles[row1][col1] != wall){
-      // Set original tile back on the x0,y0 position
-      if(original_tile == dirt || original_tile == robby_dirt)
-        w->tiles[row0][col0] = dirt;
-      else if(original_tile == clean)
-        w->tiles[row0][col0] = clean;
-      else
-        w->tiles[row0][col0] = clean;
-      //Put robby on the new x1,y1 position
-      if(w->tiles[row1][col1] == clean)
-        w->tiles[row1][col1] = robby;
-      else if(w->tiles[row1][col1] == dirt)
-        w->tiles[row1][col1] = robby_dirt;
-      return 0.0;
-    }
-  return -5.0;
+
+  e_tile original_tile = w->tiles[row0][col0];
+  // Set original tile back on the x0,y0 position
+  if(original_tile == dirt || original_tile == robby_dirt)
+    w->tiles[row0][col0] = dirt;
+  else
+    w->tiles[row0][col0] = clean;
+  //Put robby on the new x1,y1 position
+  if(w->tiles[row1][col1] == clean)
+    w->tiles[row1][col1] = robby;
+  else if(w->tiles[row1][col1] == dirt)
+    w->tiles[row1][col1] = robby_dirt;
+
+  return 0.0;
 }
 
 void get_robby_position(world *w, int *col, int *row){
@@ -41,7 +39,7 @@ void get_robby_position(world *w, int *col, int *row){
 }
 
 void get_neighbours(world *w, unsigned int *n){
-  int r_col,r_row;
+  int r_col=0,r_row=0;
 
   get_robby_position(w, &r_col, &r_row);
   if(r_row-1 >= 0) // North

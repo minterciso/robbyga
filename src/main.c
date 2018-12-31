@@ -53,19 +53,43 @@ int main(int argc, char *argv[]){
   // Start the program
   world *w = NULL;
   individual *pop = NULL;
+  FILE *fp = NULL;
 
+  fprintf(stdout,"[*] Creating population...");
+  fflush(stdout);
   if((pop = create_population())==NULL){
       fprintf(stdout, "[E] Error creating population\n");
       destroy_world(w);
       return EXIT_FAILURE;
     }
+  fprintf(stdout,"[OK]\n");
+  fflush(stdout);
+  if((fp=fopen("output.csv", "w"))==NULL){
+      perror("fopen");
+      free(pop);
+      return EXIT_FAILURE;
+    }
+  fprintf(fp, "generation, fitness, strategy\n");
+  fflush(fp);
 
-  fitness(pop, cols, rows);
-  qsort(pop, POP_SIZE, sizeof(individual), cmpind);
-  for(int i=0;i<POP_SIZE;i++)
-    fprintf(stdout,"%d: %0.10f\n", i, pop[i].fitness);
-
+  individual *best = NULL;
+  for(int g=0;g<MAX_GENERATIONS;g++){
+      fprintf(stdout,"[*] Generation %04d: ", g);
+      fitness(pop, cols, rows);
+      qsort(pop, POP_SIZE, sizeof(individual), cmpind);
+      best=&pop[0];
+      fprintf(fp, "%d,%0.10f,", g, best->fitness);
+      for(int i=0;i<STRATEGY_SIZE;i++)
+        fprintf(fp, "%d", best->strategy[i]);
+      fprintf(fp,"\n");
+      fflush(fp);
+      fprintf(stdout,"%0.10f\n",best->fitness);
+      fflush(stdout);
+      if(g!=MAX_GENERATIONS)
+        crossover_and_mutate(pop, tournament);
+    }
 
   free(pop);
+  fclose(fp);
   return EXIT_SUCCESS;
 }
