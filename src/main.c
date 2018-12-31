@@ -17,6 +17,12 @@ void usage(FILE *stream, int exit_code){
   exit(exit_code);
 }
 
+static int cmpind(const void *p1, const void *p2){
+  individual *i1 = (individual*)p1;
+  individual *i2 = (individual*)p2;
+  return i2->fitness - i1->fitness;
+}
+
 int main(int argc, char *argv[]){
   // get opt and program setup
   program_name = argv[0];
@@ -55,6 +61,7 @@ int main(int argc, char *argv[]){
     }
 
   fitness(pop, cols, rows);
+  qsort(pop, POP_SIZE, sizeof(individual), cmpind);
   for(int i=0;i<POP_SIZE;i++)
     fprintf(stdout,"%d: %0.10f\n", i, pop[i].fitness);
 
