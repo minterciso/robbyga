@@ -1,37 +1,63 @@
 #include "robby.h"
 
-void place_robby(world *w, size_t x, size_t y){
-  if(w->tiles[x][y] != wall)
-    w->tiles[x][y] = robby;
+void place_robby(world *w, int col, int row){
+  if(w->tiles[row][col] != wall)
+    w->tiles[row][col] = robby;
 }
 
-int move_robby(world *w, size_t x0, size_t y0, size_t x1, size_t y1){
-  e_tile original_tile = w->tiles[y0][x0];
-  if(w->tiles[y1][x1] != wall){
+int move_robby(world *w, int col0, int row0, int col1, int row1){
+  e_tile original_tile = w->tiles[row0][col0];
+  if(w->tiles[row1][col1] != wall){
       // Set original tile back on the x0,y0 position
       if(original_tile == dirt || original_tile == robby_dirt)
-        w->tiles[y0][x0] = dirt;
+        w->tiles[row0][col0] = dirt;
       else if(original_tile == clean)
-        w->tiles[y0][x0] = clean;
+        w->tiles[row0][col0] = clean;
       else
-        w->tiles[y0][x0] = clean;
+        w->tiles[row0][col0] = clean;
       //Put robby on the new x1,y1 position
-      if(w->tiles[y1][x1] == clean)
-        w->tiles[y1][x1] = robby;
-      else if(w->tiles[x1][x1] == dirt)
-        w->tiles[y1][x1] = robby_dirt;
+      if(w->tiles[row1][col1] == clean)
+        w->tiles[row1][col1] = robby;
+      else if(w->tiles[row1][col1] == dirt)
+        w->tiles[row1][col1] = robby_dirt;
       return 0;
     }
   return -5;
 }
 
-void get_robby_position(world *w, size_t *x, size_t *y){
-  for(int i=0;i<w->x;i++){
-      for(int j=0;j<w->y;j++){
+void get_robby_position(world *w, int *col, int *row){
+  for(int i=0;i<w->rows;i++){
+      for(int j=0;j<w->cols;j++){
           if(w->tiles[i][j] == robby || w->tiles[i][j] == robby_dirt){
-              *y=i;
-              *x=j;
+              *col=j;
+              *row=i;
             }
         }
     }
+}
+
+void get_neighbours(world *w, unsigned int *n){
+  int r_col,r_row;
+
+  get_robby_position(w, &r_col, &r_row);
+  if(r_row-1 >= 0) // North
+      n[0] = (unsigned int)w->tiles[r_row-1][r_col];
+  else
+    n[0] = (unsigned int)wall;
+  if(r_row+1 < w->cols) // South
+    n[1] = (unsigned int)w->tiles[r_row+1][r_col];
+  else
+    n[1] = (unsigned int)wall;
+  if(r_col + 1 >= 0) // East
+    n[2] = (unsigned int)w->tiles[r_row][r_col+1];
+  else
+    n[2] = (unsigned int)wall;
+  if(r_col - 1 < w->rows) // West
+    n[3] = (unsigned int)w->tiles[r_row][r_col-1];
+  else
+    n[3] = (unsigned int)wall;
+  if(w->tiles[r_row][r_col] == robby_dirt)
+    n[4] = (unsigned int)dirt;
+  else
+    n[4] = (unsigned int)clean;
 }

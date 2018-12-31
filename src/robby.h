@@ -3,9 +3,9 @@
 
 #include "world.h"
 
-void place_robby(world *w, size_t x, size_t y);
-int move_robby(world *w, size_t x0, size_t y0, size_t x1, size_t y1);
-void get_robby_position(world *w, size_t *x, size_t *y);
-
+void place_robby(world *w, int col, int row);
+int move_robby(world *w, int col0, int row0, int col1, int row1);
+void get_robby_position(world *w, int *col, int *row);
+void get_neighbours(world *w, unsigned int *n);
 
 #endif // ROBBY_H

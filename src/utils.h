@@ -5,5 +5,6 @@
 #include <stdlib.h>
 
 void start_prng(void);
+int to_decimal(unsigned int *str, int base, int len);
 
 #endif // UTILS_H
