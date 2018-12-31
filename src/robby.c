@@ -5,8 +5,12 @@ void place_robby(world *w, int col, int row){
     w->tiles[row][col] = robby;
 }
 
-int move_robby(world *w, int col0, int row0, int col1, int row1){
+float move_robby(world *w, int col0, int row0, int col1, int row1){
   e_tile original_tile = w->tiles[row0][col0];
+  if(col1 < 0 || col1 > w->cols-1)
+    return -5.0;
+  if(row1 < 0 || row1 > w->rows-1)
+    return -5.0;
   if(w->tiles[row1][col1] != wall){
       // Set original tile back on the x0,y0 position
       if(original_tile == dirt || original_tile == robby_dirt)
@@ -20,9 +24,9 @@ int move_robby(world *w, int col0, int row0, int col1, int row1){
         w->tiles[row1][col1] = robby;
       else if(w->tiles[row1][col1] == dirt)
         w->tiles[row1][col1] = robby_dirt;
-      return 0;
+      return 0.0;
     }
-  return -5;
+  return -5.0;
 }
 
 void get_robby_position(world *w, int *col, int *row){
@@ -48,11 +52,11 @@ void get_neighbours(world *w, unsigned int *n){
     n[1] = (unsigned int)w->tiles[r_row+1][r_col];
   else
     n[1] = (unsigned int)wall;
-  if(r_col + 1 >= 0) // East
+  if(r_col + 1 < w->rows) // East
     n[2] = (unsigned int)w->tiles[r_row][r_col+1];
   else
     n[2] = (unsigned int)wall;
-  if(r_col - 1 < w->rows) // West
+  if(r_col - 1 >= 0) // West
     n[3] = (unsigned int)w->tiles[r_row][r_col-1];
   else
     n[3] = (unsigned int)wall;

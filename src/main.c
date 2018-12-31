@@ -5,6 +5,7 @@
 #include "world.h"
 #include "utils.h"
 #include "robby.h"
+#include "ga.h"
 
 const char *program_name;
 
@@ -22,11 +23,11 @@ int main(int argc, char *argv[]){
   int next_option;
   const char* const short_options = "r:c:h";
   const struct option long_option[] ={
-    {"help",   0, NULL, 'h'},
-    {"rows", 1, NULL, 'r'},
-    {"cols", 1, NULL, 'c'},
-    {NULL,     0, NULL, 0}
-  };
+  {"help",   0, NULL, 'h'},
+  {"rows", 1, NULL, 'r'},
+  {"cols", 1, NULL, 'c'},
+  {NULL,     0, NULL, 0}
+};
   int cols, rows;
   cols=10;
   rows=10;
@@ -45,32 +46,19 @@ int main(int argc, char *argv[]){
   start_prng();
   // Start the program
   world *w = NULL;
+  individual *pop = NULL;
 
-
-  if((w=create_world(cols,rows))==NULL){
-      fprintf(stderr,"[*] Unable to create world\n");
+  if((pop = create_population())==NULL){
+      fprintf(stdout, "[E] Error creating population\n");
+      destroy_world(w);
       return EXIT_FAILURE;
     }
-  int robby_row, robby_col;
-  robby_col = robby_row = 0;
-  place_robby(w, robby_col, robby_row);
-  move_robby(w, robby_col, robby_row, robby_col+1, robby_row);
-  move_robby(w, robby_col+1, robby_row, robby_col+2, robby_row);
-  move_robby(w, robby_col+2, robby_row, robby_col+3, robby_row);
-  move_robby(w, robby_col+3, robby_row, robby_col+3, robby_row+1);
-  print_world(stdout,w);
-  get_robby_position(w, &robby_col, &robby_row);
-  fprintf(stdout,"Robby Position (Col:%d, Row:%d)\n", robby_col, robby_row);
-  unsigned int neighbours[5];
-  get_neighbours(w, neighbours);
-  fprintf(stdout, "Neighbours:\n");
-  fprintf(stdout,"N:%d\n", neighbours[0]);
-  fprintf(stdout,"S:%d\n", neighbours[1]);
-  fprintf(stdout,"E:%d\n", neighbours[2]);
-  fprintf(stdout,"W:%d\n", neighbours[3]);
-  fprintf(stdout,"C:%d\n", neighbours[4]);
 
-  destroy_world(w);
+  fitness(pop, cols, rows);
+  for(int i=0;i<POP_SIZE;i++)
+    fprintf(stdout,"%d: %0.10f\n", i, pop[i].fitness);
 
+
+  free(pop);
   return EXIT_SUCCESS;
 }
