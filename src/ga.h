@@ -13,7 +13,7 @@
 #define KEEP_POP POP_SIZE*0.2
 #define AMOUNT_OF_SESSIONS 100
 #define MAX_STEPS 200
-#define PROB_MUTATION 0.005
+#define PROB_MUTATION 0.02
 #define MAX_GENERATIONS 500
 
 typedef enum e_selection{
