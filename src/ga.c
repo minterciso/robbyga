@@ -37,11 +37,11 @@ float execute_strategy(world *w, int strategy){
   // Execute strategy
   switch (strategy) {
     case 0: // Move North
-      return move_robby(w, robby_col, robby_row, robby_col-1, robby_row);
+      return move_robby(w, robby_col, robby_row, robby_col, robby_row-1);
     case 1: // Move South
-      return move_robby(w, robby_col, robby_row, robby_col+1, robby_row);
-    case 2: // Move East
       return move_robby(w, robby_col, robby_row, robby_col, robby_row+1);
+    case 2: // Move East
+      return move_robby(w, robby_col, robby_row, robby_col+1, robby_row);
     case 3: // Move West
       return move_robby(w, robby_col, robby_row, robby_col-1, robby_row);
     case 4: break; // Stay put
@@ -144,12 +144,12 @@ void crossover_and_mutate(individual *pop, e_selection sel_type){
       float rnd = 0.0;
       for(int s=0;s<STRATEGY_SIZE;s++){
           rnd = gsl_rng_uniform(prng);
-          if(rnd < PROB_MUTATION)
-            pop[s1_idx].strategy[s] = rand() % STRATEGY_OPTIONS;
+          if(rnd <= PROB_MUTATION)
+            pop[s1_idx].strategy[s] = gsl_rng_uniform_int(prng, STRATEGY_OPTIONS);
 
           rnd = gsl_rng_uniform(prng);
-          if(rnd < PROB_MUTATION)
-            pop[s2_idx].strategy[s] = rand() % STRATEGY_OPTIONS;
+          if(rnd <= PROB_MUTATION)
+            pop[s2_idx].strategy[s] = gsl_rng_uniform_int(prng, STRATEGY_OPTIONS);
         }
     }
 }

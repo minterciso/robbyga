@@ -97,7 +97,7 @@ e_tile get_tile(world *w, int col, int row){
 }
 
 int clean_tile(world *w, int col, int row){
-  if(w->tiles[row][col] == dirt){
+  if(w->tiles[row][col] == dirt || w->tiles[row][col] == robby_dirt){
       w->tiles[row][col] = clean;
       return 1;
     }

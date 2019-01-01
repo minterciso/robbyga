@@ -93,6 +93,9 @@ int main(int argc, char *argv[]){
         crossover_and_mutate(pop, tournament);
     }
 
+  fprintf(stdout,"[*] Best Strategy: ");
+  for(int i=0;i<STRATEGY_SIZE;i++) fprintf(stdout,"%d", best->strategy[i]);
+  fprintf(stdout,"\n");
   fprintf(stdout,"[*] Sample:\n");
   world *w;
   unsigned int neighbours[5];
@@ -100,6 +103,8 @@ int main(int argc, char *argv[]){
       fprintf(stderr, "[E] Unable to create world!\n");
       return EXIT_FAILURE;
     }
+  clear_world(w);
+  fill_world(w);
   place_robby(w, 0,0);
   print_world(stdout,w);
   for(int i=0;i<MAX_STEPS;i++){
