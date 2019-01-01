@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <gsl/gsl_rng.h>
 #include "world.h"
 
 #define STRATEGY_SIZE 243
@@ -13,7 +14,7 @@
 #define AMOUNT_OF_SESSIONS 100
 #define MAX_STEPS 200
 #define PROB_MUTATION 0.005
-#define MAX_GENERATIONS 1000
+#define MAX_GENERATIONS 500
 
 typedef enum e_selection{
   elite_only,

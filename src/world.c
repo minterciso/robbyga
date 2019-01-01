@@ -1,4 +1,5 @@
 #include "world.h"
+#include "utils.h"
 
 #include <string.h>
 
@@ -53,7 +54,7 @@ world * create_world(int cols, int rows){
           return NULL;
         }
       for(int j=0;j<cols;j++)
-        if(rand() % 2 == 1)
+        if(gsl_rng_uniform(prng) <= 0.5)
           w->tiles[i][j] = dirt;
     }
 
@@ -113,7 +114,7 @@ void clear_world(world *w){
 void fill_world(world *w){
   for(int i=0;i<w->rows;i++){
       for(int j=0;j<w->cols;j++){
-          if(rand() % 2 == 1)
+          if(gsl_rng_uniform(prng) <= 0.5)
             w->tiles[i][j] = dirt;
         }
     }

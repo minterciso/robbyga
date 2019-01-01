@@ -3,8 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <gsl/gsl_rng.h>
 
-void start_prng(void);
+gsl_rng *prng;
+
+int start_prng(void);
 int to_decimal(unsigned int *str, int base, int len);
+void stop_prng(void);
 
 #endif // UTILS_H

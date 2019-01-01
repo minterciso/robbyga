@@ -7,9 +7,9 @@ void place_robby(world *w, int col, int row){
 }
 
 float move_robby(world *w, int col0, int row0, int col1, int row1){
-  if(col1 < 0 || col1 > w->cols-1)
+  if(col1 < 0 || col1 >= w->cols)
     return -5.0;
-  if(row1 < 0 || row1 > w->rows-1)
+  if(row1 < 0 || row1 >= w->rows)
     return -5.0;
 
   e_tile original_tile = w->tiles[row0][col0];

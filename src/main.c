@@ -20,7 +20,10 @@ void usage(FILE *stream, int exit_code){
 static int cmpind(const void *p1, const void *p2){
   individual *i1 = (individual*)p1;
   individual *i2 = (individual*)p2;
-  return i2->fitness - i1->fitness;
+  //return i1->fitness - i2->fitness;
+  if(i1->fitness > i2->fitness) return -1;
+  if(i2->fitness > i1->fitness) return 1;
+  return 0;
 }
 
 int main(int argc, char *argv[]){
@@ -49,9 +52,11 @@ int main(int argc, char *argv[]){
         }
     } while(next_option != -1);
 
-  start_prng();
+  if(start_prng() < 0){
+      fprintf(stderr,"[E] No valid PRNG!\n");
+      return EXIT_FAILURE;
+    }
   // Start the program
-  world *w = NULL;
   individual *pop = NULL;
   FILE *fp = NULL;
 
@@ -59,7 +64,6 @@ int main(int argc, char *argv[]){
   fflush(stdout);
   if((pop = create_population())==NULL){
       fprintf(stdout, "[E] Error creating population\n");
-      destroy_world(w);
       return EXIT_FAILURE;
     }
   fprintf(stdout,"[OK]\n");
@@ -89,7 +93,26 @@ int main(int argc, char *argv[]){
         crossover_and_mutate(pop, tournament);
     }
 
+  fprintf(stdout,"[*] Sample:\n");
+  world *w;
+  unsigned int neighbours[5];
+  if((w=create_world(cols, rows))==NULL){
+      fprintf(stderr, "[E] Unable to create world!\n");
+      return EXIT_FAILURE;
+    }
+  place_robby(w, 0,0);
+  print_world(stdout,w);
+  for(int i=0;i<MAX_STEPS;i++){
+      get_neighbours(w, neighbours);
+      int strategy = get_strategy(best,neighbours);
+      execute_strategy(w, strategy);
+    }
+  fprintf(stdout,"\n");
+  print_world(stdout, w);
+  destroy_world(w);
+
   free(pop);
   fclose(fp);
+  stop_prng();
   return EXIT_SUCCESS;
 }
