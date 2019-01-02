@@ -1,0 +1,108 @@
+# Introduction
+This is a simple implementation of Robby The Soda Can robot GA, as stated by Melanie Mitchell book, "Complexity: A Guided Tour".
+You can find Mitchell source code [here](http://web.cecs.pdx.edu/~mm/RobbyTheRobot/). I find that this implementation is a little
+easier to follow, it is slower, however it is more readable and provides very good solutions.
+
+# Usage
+The usage of the program is very simple, you can at the command line pass a few parameters that can control a little of the GA.
+Those are:
+
+    Usage: ./robbyGA options
+        -h           --help                       This help message
+        -r size      --rows size                  Rows of the world
+        -c size      --cols size                  Cols of the world
+        -s selection --selection selection_type   The selection type, valid values: 0:'tournament',1:'elite',2:'roulette'
+        -o file      --output file                Output csv file with results
+
+The biggest parameter that can change something is the *selection* parameter, more on this latter.
+
+# Genetic Algorithm for Robby
+The Genetic Algorithm is pretty straightforward:
+
+1. Generate an initial random population
+2. See how well each individual can handle an amount of random cleanning sessions
+3. Create a new population based on crossover and mutation
+4. Execute from 2 again until finished the amount of generations
+
+There are 2 points that are worth mentioning, the strategy (or, what is a strategy) and the selection type.
+
+## What is a strategy?
+For robby, a strategy is what action it'll take based on the neighbours it has. You can think of a strategy for robby as a table
+like this:
+
+| North | South | East | West | Current | Action |
+| ----- | ----- | ---- | ---- | ------- | ------ |
+| Clean | Wall  | Dirt | Clean| Clean   |Go North|
+| Clean | Wall  | Dirt | Dirt | Dirt    |Clean up|
+| Clean | Clean | Dirt | Clean| Clean   |Go South|
+
+And this can go on and on until all neighbours options are exausted, that means that there's 243 different options (each site
+can either be a wall, clean or dirt, so 3x3x3x3x3=243). There's actually a little less because the current site can't be a 
+wall, but to keep it simple we'll go with a full option.
+
+That being said, a strategy is the Action array of movements for each of the 243 options. The valid actions used here are:
+
+0. Go North
+1. Go South
+2. Go East
+3. Go West
+4. Do nothing
+5. Clean up
+6. Move at random
+
+So for instance, a valid strategy can be:<code>644516003410215120314630331263452145021310422550020315544024211360444663622646663145600513533514131050325000146552114616165340140404330115251155340201601141526416256041211252616234446256410252520203250136205342243003623111111332615012503110065</code>
+
+What we used here was a base 3 representation, so for instance if the neighbours were to be:
+
+* North: Wall
+* South: Dirt
+* East: Clean
+* West: Wall
+* Current: Dirt
+
+That would give the base 3 number of 21021, that is 196 in decimal, and by picking up the strategy presented before would be action 2, that is "Go East".
+Which is a good solution, it won't hit a wall, however it won't clean up the dirt it currently is in.
+
+## Selection type
+There are a lot of different selection types and implementations for a GA, in Melanie Mitchell book she uses a roulette well
+selection type, in the code it's being used as well. I implemented 3 different selecction types:
+
+* Elite Only
+* Tournament
+* Roulette
+
+### Elite only
+In my experiments I found out that this (at least for the Robby and my implementation of it) presents the best solutions. Basically
+it'll pick up 20% of the best individuals (bigger fitness values) and keep them. The rest it'll be created by selecting at random
+from that 20% best individuals with crossover and mutation.
+
+By using this selection method I was possible to achieve **very** high fitness values right around the 300th generation. Howeverr
+after it kind of stuck on a ~450 fitness value (the maximum is 500). And that's the issue with the elite selection type, you
+may not include some low performing strategy that maybe with some crossover or mutation can yeld good performance.
+
+### Tournament
+Tournament is very simple, it selected 2 random individuals and returns the id of the biggest fitness one. In this type of
+selection the rest of the population is created based on any individual of the old population. By doing this we prevent the issue
+with the elite selection that completelly removes bad individuals, however we don't really give a good chance for good individuals.
+We can bypass this by increasing the amount of individuals on the tournament.
+
+The findings with this type of selection is that around the 400th generation it reaches a local maxima of ~45 fitness and stay there.
+
+### Roulette
+This is the standard selection for a GA. It gives a weigh that is proporcional to the fitness of the individual and then
+selects a random number. The individual that has a higher probability to be selected will be selected, but this gives a chance
+for slow performing individuals as well.
+
+As far as I could follow, Mitchell implementation uses this selection method and can get very good results, however my results, on
+my implementation shows that it can reach a local maxima of ~45 of fitness on the 180th generation, and than it keeps there.
+This can be due to an issue on the implementation, and needs to be further checked.
+
+### Others
+There are other types of selection and I may be implementing them in the future.
+
+# Performance
+I wasn't going for performance on this code, but was going for code readability, so there are a lot of points to increase the performance
+and this will be made in time.
+
+Best regards and have fun
+
