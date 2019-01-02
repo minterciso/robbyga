@@ -46,10 +46,10 @@ float execute_strategy(world *w, int strategy){
       return move_robby(w, robby_col, robby_row, robby_col-1, robby_row);
     case 4: break; // Stay put
     case 5: // Pick Up
-      if(clean_tile(w, robby_col, robby_row)==1) // Clean was successfull
-        return 10.0;
-      else
+      if(clean_tile(w, robby_col, robby_row)==0) // Clean was unsuccessfull
         return -1.0;
+      else
+        return 10.0;
     case 6: // Random movement
       move_direction = gsl_rng_uniform_int(prng, 4);
       return execute_strategy(w, move_direction);
