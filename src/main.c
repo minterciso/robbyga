@@ -22,7 +22,6 @@ void usage(FILE *stream, int exit_code){
 static int cmpind(const void *p1, const void *p2){
   individual *i1 = (individual*)p1;
   individual *i2 = (individual*)p2;
-  //return i1->fitness - i2->fitness;
   if(i1->fitness > i2->fitness) return -1;
   if(i2->fitness > i1->fitness) return 1;
   return 0;
