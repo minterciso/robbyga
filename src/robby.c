@@ -33,6 +33,7 @@ void get_robby_position(world *w, int *col, int *row){
           if(w->tiles[i][j] == robby || w->tiles[i][j] == robby_dirt){
               *col=j;
               *row=i;
+              return;
             }
         }
     }
