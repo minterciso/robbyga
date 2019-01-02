@@ -118,4 +118,5 @@ void fill_world(world *w){
             w->tiles[i][j] = dirt;
         }
     }
+  w->tiles[0][0] = robby;
 }

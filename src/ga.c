@@ -66,7 +66,6 @@ void fitness(individual *pop, int cols, int rows){
       // Create random sessions for each individual
       for(int i=0;i<AMOUNT_OF_SESSIONS;i++){
           fill_world(session);
-          place_robby(session, 0, 0);
           unsigned int neighbours[5];
           int strategy = -1;
           float fit=0.0;
