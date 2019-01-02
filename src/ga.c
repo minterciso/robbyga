@@ -96,12 +96,19 @@ int select_individual(individual *pop, e_selection sel_type){
       return p2_idx;
     }
   if(sel_type == roulette){
+      // Assign weights
+      for(int i=0;i<POP_SIZE;i++){
+          if(pop[i].fitness > 0)
+            pop[i].weight = pop[i].fitness;
+          else
+            pop[i].weight = 0.001;
+        }
       float f_sum = 0.0;
       for(int i=0;i<POP_SIZE;i++)
-        f_sum += pop[i].fitness;
+          f_sum += pop[i].weight;
       float rnd = gsl_rng_uniform(prng) * f_sum;
       for(int i=0;i<POP_SIZE;i++){
-          rnd -= pop[i].fitness;
+          rnd -= pop[i].weight;
           if(rnd < 0) return i;
         }
     }

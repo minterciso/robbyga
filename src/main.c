@@ -11,9 +11,11 @@ const char *program_name;
 
 void usage(FILE *stream, int exit_code){
   fprintf(stream, "Usage: %s options\n", program_name);
-  fprintf(stream, "    -h        --help             This help message\n");
-  fprintf(stream, "    -r size   --rows size        Rows of the world\n");
-  fprintf(stream, "    -c size   --cols size        Cols of the world\n");
+  fprintf(stream, "    -h           --help                       This help message\n");
+  fprintf(stream, "    -r size      --rows size                  Rows of the world\n");
+  fprintf(stream, "    -c size      --cols size                  Cols of the world\n");
+  fprintf(stream, "    -s selection --selection selection_type   The selection type, valid values: 0:'tournament',1:'elite',2:'roulette'\n");
+  fprintf(stream, "    -o file      --output file                Output csv file with results\n");
   exit(exit_code);
 }
 
@@ -30,14 +32,18 @@ int main(int argc, char *argv[]){
   // get opt and program setup
   program_name = argv[0];
   int next_option;
-  const char* const short_options = "r:c:h";
+  const char* const short_options = "r:c:hs:o:";
   const struct option long_option[] ={
-  {"help",   0, NULL, 'h'},
-  {"rows", 1, NULL, 'r'},
-  {"cols", 1, NULL, 'c'},
-  {NULL,     0, NULL, 0}
+  {"help",      0, NULL, 'h'},
+  {"rows",      1, NULL, 'r'},
+  {"cols",      1, NULL, 'c'},
+  {"selection", 1, NULL, 's'},
+  {"output",    1, NULL, 'o'},
+  {NULL,        0, NULL, 0}
 };
   int cols, rows;
+  char *fname = NULL;
+  e_selection selection_type = elite_only;
   cols=10;
   rows=10;
   do{
@@ -46,11 +52,21 @@ int main(int argc, char *argv[]){
         case 'h': usage(stdout, EXIT_SUCCESS); break;
         case 'c': cols=atoi(optarg); break;
         case 'r': rows=atoi(optarg); break;
+        case 's': switch (atoi(optarg)){
+            case 0: selection_type=tournament; break;
+            case 1: selection_type=elite_only; break;
+            case 2: selection_type=roulette; break;
+            }
+          break;
+        case 'o': fname = optarg; break;
         case '?': usage(stderr,EXIT_FAILURE);
         case -1: break;
         default:abort();
         }
     } while(next_option != -1);
+
+  if(fname == NULL)
+    fname="output.csv";
 
   if(start_prng() < 0){
       fprintf(stderr,"[E] No valid PRNG!\n");
@@ -68,7 +84,7 @@ int main(int argc, char *argv[]){
     }
   fprintf(stdout,"[OK]\n");
   fflush(stdout);
-  if((fp=fopen("output.csv", "w"))==NULL){
+  if((fp=fopen(fname, "w"))==NULL){
       perror("fopen");
       free(pop);
       return EXIT_FAILURE;
@@ -90,31 +106,12 @@ int main(int argc, char *argv[]){
       fprintf(stdout,"%0.10f\n",best->fitness);
       fflush(stdout);
       if(g!=MAX_GENERATIONS)
-        crossover_and_mutate(pop, tournament);
+        crossover_and_mutate(pop, selection_type);
     }
 
   fprintf(stdout,"[*] Best Strategy: ");
   for(int i=0;i<STRATEGY_SIZE;i++) fprintf(stdout,"%d", best->strategy[i]);
   fprintf(stdout,"\n");
-  fprintf(stdout,"[*] Sample:\n");
-  world *w;
-  unsigned int neighbours[5];
-  if((w=create_world(cols, rows))==NULL){
-      fprintf(stderr, "[E] Unable to create world!\n");
-      return EXIT_FAILURE;
-    }
-  clear_world(w);
-  fill_world(w);
-  place_robby(w, 0,0);
-  print_world(stdout,w);
-  for(int i=0;i<MAX_STEPS;i++){
-      get_neighbours(w, neighbours);
-      int strategy = get_strategy(best,neighbours);
-      execute_strategy(w, strategy);
-    }
-  fprintf(stdout,"\n");
-  print_world(stdout, w);
-  destroy_world(w);
 
   free(pop);
   fclose(fp);

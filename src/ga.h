@@ -14,7 +14,7 @@
 #define AMOUNT_OF_SESSIONS 100
 #define MAX_STEPS 200
 #define PROB_MUTATION 0.02
-#define MAX_GENERATIONS 500
+#define MAX_GENERATIONS 1000
 
 typedef enum e_selection{
   elite_only,
@@ -24,6 +24,7 @@ typedef enum e_selection{
 
 typedef struct individual{
   unsigned int strategy[STRATEGY_SIZE];
+  float weight;
   float fitness;
 } individual;
 
