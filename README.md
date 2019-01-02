@@ -16,6 +16,10 @@ Those are:
 
 The biggest parameter that can change something is the *selection* parameter, more on this latter.
 
+## Dependencies
+
+* GSL for creatind random numbers
+
 # Genetic Algorithm for Robby
 The Genetic Algorithm is pretty straightforward:
 
