@@ -159,4 +159,5 @@ void crossover_and_mutate(individual *pop, e_selection sel_type){
             pop[s2_idx].strategy[s] = gsl_rng_uniform_int(prng, STRATEGY_OPTIONS);
         }
     }
+  free(old_pop);
 }
