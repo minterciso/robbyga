@@ -14,7 +14,7 @@
 #define AMOUNT_OF_SESSIONS 100
 #define MAX_STEPS 200
 #define PROB_MUTATION 0.02
-#define MAX_GENERATIONS 5
+#define MAX_GENERATIONS 1000
 
 typedef enum e_selection{
   elite_only,
