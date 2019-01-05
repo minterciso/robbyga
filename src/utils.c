@@ -5,8 +5,7 @@
 #include <gsl/gsl_rng.h>
 
 int start_prng(void){
-  const gsl_rng_type *T = gsl_rng_mt19937;
-  gsl_rng_env_setup();
+  const gsl_rng_type *T = gsl_rng_ranlxs2;
   if((prng=gsl_rng_alloc(T))==NULL){
       fprintf(stderr,"[E] Error starting PRNG\n");
       return -1;
@@ -15,11 +14,15 @@ int start_prng(void){
   return 0;
 }
 
-int to_decimal(unsigned int *str, int base, int len){
-  int power = len - 1;
+int to_decimal(int *arr, int base, int len){
+  int power = 1;
   int num = 0;
-  for(int x = 0;x<len;x++, power--){
-      num += str[x]*pow(base,power);
+  int i;
+  for(i=len - 1; i>= 0; i--){
+      if(arr[i] >= base)
+        return -1;
+      num += (arr[i]*power);
+      power *= base;
     }
   return num;
 }

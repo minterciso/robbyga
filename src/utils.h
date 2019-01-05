@@ -14,13 +14,13 @@ gsl_rng *prng;
 int start_prng(void);
 
 /**
- * @brief to_decimal Transform an unsigned int array of base 'base' in decimal
- * @param str An unsigned int array
- * @param base The base of the str array
- * @param len The size of the str array
- * @return The decimal number
+ * @brief to_decimal Transform a array number on base 'base' on decimal
+ * @param arr The number arrary on base 'base'
+ * @param base The base we are working on
+ * @param len The size of the array
+ * @return -1 if unable to convert, or the decimal number
  */
-int to_decimal(unsigned int *str, int base, int len);
+int to_decimal(int *arr, int base, int len);
 
 /**
  * @brief stop_prng Free the PRNG memory
