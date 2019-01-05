@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "consts.h"
+#include "world.h"
 
 typedef struct robby{
   int neighbours[5];
@@ -22,5 +23,13 @@ robby* create_population(void);
  * @param pop A pointer to the population
  */
 void destroy_population(robby *pop);
+
+/**
+ * @brief execute_strategy Execute one step of a strategy and return the score of it
+ * @param s The session to execute the strategy on
+ * @param r The robby with the strategy to execute
+ * @return The score of the strategy
+ */
+int execute_strategy(session *s, robby *r);
 
 #endif // ROBBY_H

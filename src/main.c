@@ -2,10 +2,19 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+#include "world.h"
 #include "utils.h"
 #include "robby.h"
 
 const char *prog_name;
+
+static int cmp_robby(const void *p1, const void *p2){
+  robby *r1 = (robby*)p1;
+  robby *r2 = (robby*)p2;
+  if(r1->fitness > r2->fitness) return -1;
+  if(r2->fitness > r1->fitness) return 1;
+  return 0;
+}
 
 void usage(FILE *stream, int exit_code){
   fprintf(stream, "Usage: %s options\n", prog_name);
@@ -24,7 +33,7 @@ int main(int argc, char **argv){
   {"help",   0, NULL, 'h'},
   {"output", 1, NULL, 'o'},
   {NULL,     0, NULL, 0}
-  };
+};
   int next_option;
   char *fname = NULL;
   do{
@@ -61,6 +70,25 @@ int main(int argc, char **argv){
       return EXIT_FAILURE;
     }
   fprintf(stdout,"[OK]\n");
+
+  /***************************/
+  /* Test for one generation */
+  /***************************/
+  for(int i=0;i<POP_SIZE;i++){
+      session *s = create_sessions();
+      for(int k=0;k<CLEANING_SESSIONS;k++){
+          int score = 0;
+          for(int j=0;j<200;j++)
+            score += execute_strategy(&s[k], &pop[i]);
+          pop[i].fitness += (float)score;
+        }
+      pop[i].fitness /= CLEANING_SESSIONS;
+      destroy_sessions(s);
+    }
+  qsort(pop, POP_SIZE, sizeof(robby), cmp_robby);
+  for(int i=0;i<POP_SIZE;i++){
+      fprintf(stdout,"%d: %.5f\n", i, pop[i].fitness);
+    }
 
   fprintf(stdout,"[*] Cleaning up...");
   fflush(stdout);

@@ -9,8 +9,8 @@ typedef struct session{
   int tiles[W_ROWS][W_COLS];
   int robby_row;
   int robby_col;
-  int start_can_amount = 0;
-  int end_can_amount = 0;
+  int start_can_amount;
+  int end_can_amount;
 }session;
 
 /**
