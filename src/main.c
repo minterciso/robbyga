@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+#include "utils.h"
+#include "robby.h"
+
 const char *prog_name;
 
 void usage(FILE *stream, int exit_code){
@@ -40,6 +43,30 @@ int main(int argc, char **argv){
   fprintf(stdout,"[*] Starting %s\n", prog_name);
   fprintf(stdout,"[*] Options: \n");
   fprintf(stdout,"[*] - Output file: '%s'\n", fname);
+  // GA variables
+  robby *pop = NULL;
+
+  fprintf(stdout,"[*] Starting PRNG...");
+  fflush(stdout);
+  if(start_prng() < 0){
+      fprintf(stderr,"[E] Unable to start PRNG\n");
+      return EXIT_FAILURE;
+    }
+  fprintf(stdout,"[OK]\n");
+  fprintf(stdout,"[*] Creating initial population...");
+  fflush(stdout);
+  if((pop = create_population())==NULL){
+      fprintf(stderr,"[E] Unable to create population\n");
+      stop_prng();
+      return EXIT_FAILURE;
+    }
+  fprintf(stdout,"[OK]\n");
+
+  fprintf(stdout,"[*] Cleaning up...");
+  fflush(stdout);
+  stop_prng();
+  destroy_population(pop);
+  fprintf(stdout,"[OK]\n");
 
   fprintf(stdout,"[*] Done!\n");
   return EXIT_SUCCESS;
