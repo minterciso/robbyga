@@ -3,10 +3,14 @@
 
 // GA Params
 #define POP_SIZE 200
+#define POP_ELITE POP_SIZE * 0.2
 #define PROB_XOVER 1.0
 #define PROB_MUTATION 0.005
 #define GA_RUNS 1000
 #define CLEANING_SESSIONS 100
+#define SELECTION_ROULETTE 0
+#define SELECTION_ELITE 1
+#define SELECTION_MODE SELECTION_ELITE
 
 // Robby Strategy params
 #define S_MOVE_NORTH 0

@@ -10,6 +10,7 @@ typedef struct robby{
   int neighbours[5];
   int strategy[S_SIZE];
   float fitness;
+  float weight;
 } robby;
 
 /**
