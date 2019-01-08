@@ -1,4 +1,5 @@
 #include "ga.h"
+
 #include "world.h"
 #include "utils.h"
 
@@ -12,28 +13,49 @@ static int cmp_robby(const void *p1, const void *p2){
   return 0;
 }
 
-int select_individual(robby *pop, double weighted_sum){
-  if(SELECTION_MODE == SELECTION_ROULETTE){
+int select_individual(robby *pop, double weighted_sum, int selection_type){
+  if(selection_type == SELECTION_ROULETTE){
       // First "fix" the weights and sum the weights
       float rnd = 0.0;
       float sum = 0.0;
-      int index = 0;
+      int index = -1;
 
       // Now select a random value from 0 to weighted_sum
       rnd = gsl_rng_uniform(prng) * weighted_sum;
       // Now find the index corresponding to the rnd probability
-      while(sum < rnd)
-        sum += pop[index++].weight;
+      while(sum < rnd){
+          index++;
+          sum += pop[index].weight;
+        }
       return index;
     }
-  if(SELECTION_MODE == SELECTION_ELITE){
+  if(selection_type == SELECTION_ELITE){
       return gsl_rng_uniform_int(prng, POP_ELITE);
     }
+  return -1;
 }
 
-int crossover_and_mutate(robby *pop){
+int crossover_and_mutate(robby *pop, int selection_type){
   robby *old_pop = NULL;
   size_t pop_bytes = sizeof(robby) * POP_SIZE;
+
+  // Calculate the weighted_sum
+  double weighted_sum = 0;
+  if(selection_type == SELECTION_ROULETTE){
+      for(int i=0;i<POP_SIZE;i++){
+          pop[i].weight = (float)(POP_SIZE-1);
+          weighted_sum += pop[i].weight;
+      }
+      /*
+      for(int i=0;i<POP_SIZE;i++){
+          if(pop[i].fitness > 0)
+            pop[i].weight = pop[i].fitness;
+          else
+            pop[i].weight = 0.001;
+          weighted_sum += pop[i].weight;
+        }
+        */
+    }
 
   // Allocate memory for the old population
   if((old_pop=(robby*)malloc(pop_bytes))==NULL){
@@ -42,25 +64,14 @@ int crossover_and_mutate(robby *pop){
     }
   memcpy(old_pop, pop, pop_bytes); // Copy the current population on the old population
   memset(pop, 0, pop_bytes); // Clear the current population
-  // Calculate the weighted_sum
-  double weighted_sum = 0;
-  if(SELECTION_MODE == SELECTION_ROULETTE){
-      for(int i=0;i<POP_SIZE;i++){
-          if(pop[i].fitness > 0)
-            pop[i].weight = pop[i].fitness;
-          else
-            pop[i].weight = 0.001;
-          weighted_sum += pop[i].weight;
-        }
-    }
-
+ 
   // Now create a new population
   for(int i=0;i<POP_SIZE;i+=2){
       int p1_idx, p2_idx;
       int xp;
       // Select 2 parents
-      p1_idx = select_individual(old_pop, weighted_sum);
-      p2_idx = select_individual(old_pop, weighted_sum);
+      p1_idx = select_individual(old_pop, weighted_sum, selection_type);
+      p2_idx = select_individual(old_pop, weighted_sum, selection_type);
       // If we have to crossover...
       if(gsl_rng_uniform(prng) < PROB_XOVER){
           // Select a random xover point
@@ -79,6 +90,10 @@ int crossover_and_mutate(robby *pop){
           memcpy(&pop[i].strategy, &old_pop[p1_idx].strategy, sizeof(int)*S_SIZE);
           memcpy(&pop[i+1].strategy, &old_pop[p2_idx].strategy, sizeof(int)*S_SIZE);
         }
+      pop[i].fitness = -99.99;
+      pop[i].weight = -99.99;
+      pop[i+1].fitness = -99.99;
+      pop[i+1].weight = -99.99;
       // Now check for mutation
       for(int j=0;j<S_SIZE;j++){
           if(gsl_rng_uniform(prng) < PROB_MUTATION)
@@ -129,6 +144,7 @@ int execute_ga(const char *fname){
   fprintf(stdout,"[OK]\n");
   fflush(stdout);
 
+  int selection_type = SELECTION_ELITE;
   for(int g=0;g<GA_RUNS;g++){
       // Execute the fitness
       fitness(pop);
@@ -141,8 +157,12 @@ int execute_ga(const char *fname){
       fflush(fp);
       fprintf(stdout,"[*] %04d: %.5f\n", g, best->fitness);
       fflush(stdout);
+      /*
+      if(g > GA_RUNS/2) // Whe we reached a half the generations, switch to a roulette selection
+          selection_type = SELECTION_ROULETTE;              
+      */
       if(g != GA_RUNS)
-        if(crossover_and_mutate(pop) < 0){
+        if(crossover_and_mutate(pop, selection_type) < 0){
             fprintf(stderr,"[E] Unable to crossover!\n");
             return -1;
           }

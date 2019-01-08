@@ -16,6 +16,8 @@ robby* create_population(void){
   for(int i=0;i<POP_SIZE;i++){
       for(int j=0;j<S_SIZE;j++)
         pop[i].strategy[j] = gsl_rng_uniform_int(prng, S_MAX_OPTIONS);
+      pop[i].fitness = -99.99;
+      pop[i].weight = -99.99;
     }
   return pop;
 }

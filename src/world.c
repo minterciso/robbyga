@@ -19,7 +19,8 @@ session* create_sessions(void){
       s[i].robby_row=0;
       for(int j=0;j<W_ROWS;j++){
           for(int k=0;k<W_COLS;k++){
-              if(gsl_ran_binomial(prng, 0.5, 1) == 1){
+              //if(gsl_ran_binomial(prng, 0.5, 1) == 1){
+              if(gsl_rng_uniform(prng) <= 0.5){
                   s[i].tiles[j][k] = W_TILE_CAN;
                   s[i].start_can_amount++;
                 }

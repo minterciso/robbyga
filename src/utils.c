@@ -2,15 +2,18 @@
 
 #include <math.h>
 #include <time.h>
+#include <sys/time.h>
 #include <gsl/gsl_rng.h>
 
 int start_prng(void){
-  const gsl_rng_type *T = gsl_rng_ranlxs2;
+  const gsl_rng_type *T = gsl_rng_mt19937;
   if((prng=gsl_rng_alloc(T))==NULL){
       fprintf(stderr,"[E] Error starting PRNG\n");
       return -1;
     }
-  gsl_rng_set(prng, time(NULL));
+  struct timeval tp;
+  gettimeofday(&tp, (struct timezone *)0);
+  gsl_rng_set(prng, tp.tv_usec);
   return 0;
 }
 

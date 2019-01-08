@@ -10,7 +10,7 @@
  * @param pop A pointer to the population
  * @return The id of the selected individual
  */
-int select_individual(robby *pop, double weighted_sum);
+int select_individual(robby *pop, double weighted_sum, int selection_type);
 
 /**
  * @brief fitness Calculate the fitness for one execution
@@ -24,6 +24,6 @@ void fitness(robby *pop);
  */
 int execute_ga(const char *fname);
 
-int crossover_and_mutate(robby *pop);
+int crossover_and_mutate(robby *pop, int selection_type);
 
 #endif // GA_H
