@@ -15,7 +15,6 @@ static int cmp_robby(const void *p1, const void *p2){
 
 int select_individual(robby *pop, double weighted_sum, int selection_type){
   if(selection_type == SELECTION_ROULETTE){
-      // First "fix" the weights and sum the weights
       float rnd = 0.0;
       float sum = 0.0;
       int index = -1;
@@ -43,7 +42,7 @@ int crossover_and_mutate(robby *pop, int selection_type){
   double weighted_sum = 0;
   if(selection_type == SELECTION_ROULETTE){
       for(int i=0;i<POP_SIZE;i++){
-          pop[i].weight = (float)(POP_SIZE-1);
+          pop[i].weight = (float)(POP_SIZE-i);
           weighted_sum += pop[i].weight;
       }
       /*
@@ -66,7 +65,7 @@ int crossover_and_mutate(robby *pop, int selection_type){
   memset(pop, 0, pop_bytes); // Clear the current population
  
   // Now create a new population
-  for(int i=0;i<POP_SIZE;i+=2){
+  for(int i=0;i<POP_SIZE;i++){
       int p1_idx, p2_idx;
       int xp;
       // Select 2 parents
@@ -76,30 +75,20 @@ int crossover_and_mutate(robby *pop, int selection_type){
       if(gsl_rng_uniform(prng) < PROB_XOVER){
           // Select a random xover point
           xp = gsl_rng_uniform_int(prng, S_SIZE);
-          // Create 2 sons
-          for(int j=0;j<xp;j++){
+          // Create 1 sons
+          for(int j=0;j<xp;j++)
               pop[i].strategy[j] = old_pop[p1_idx].strategy[j];
-              pop[i+1].strategy[j] = old_pop[p2_idx].strategy[j];
-            }
-          for(int j=xp;j<S_SIZE;j++){
+          for(int j=xp;j<S_SIZE;j++)
               pop[i].strategy[j] = old_pop[p2_idx].strategy[j];
-              pop[i+1].strategy[j] = old_pop[p1_idx].strategy[j];
-            }
         }
-      else{ // If we don't need to crossover, just copy the strategy
+      else // If we don't need to crossover, just copy the strategy
           memcpy(&pop[i].strategy, &old_pop[p1_idx].strategy, sizeof(int)*S_SIZE);
-          memcpy(&pop[i+1].strategy, &old_pop[p2_idx].strategy, sizeof(int)*S_SIZE);
-        }
       pop[i].fitness = -99.99;
       pop[i].weight = -99.99;
-      pop[i+1].fitness = -99.99;
-      pop[i+1].weight = -99.99;
       // Now check for mutation
       for(int j=0;j<S_SIZE;j++){
           if(gsl_rng_uniform(prng) < PROB_MUTATION)
             pop[i].strategy[j] = gsl_rng_uniform_int(prng, S_MAX_OPTIONS);
-          if(gsl_rng_uniform(prng) < PROB_MUTATION)
-            pop[i+1].strategy[j] = gsl_rng_uniform_int(prng, S_MAX_OPTIONS);
         }
     }
   free(old_pop);
@@ -144,7 +133,7 @@ int execute_ga(const char *fname){
   fprintf(stdout,"[OK]\n");
   fflush(stdout);
 
-  int selection_type = SELECTION_ELITE;
+  int selection_type = SELECTION_ROULETTE;
   for(int g=0;g<GA_RUNS;g++){
       // Execute the fitness
       fitness(pop);
@@ -157,10 +146,6 @@ int execute_ga(const char *fname){
       fflush(fp);
       fprintf(stdout,"[*] %04d: %.5f\n", g, best->fitness);
       fflush(stdout);
-      /*
-      if(g > GA_RUNS/2) // Whe we reached a half the generations, switch to a roulette selection
-          selection_type = SELECTION_ROULETTE;              
-      */
       if(g != GA_RUNS)
         if(crossover_and_mutate(pop, selection_type) < 0){
             fprintf(stderr,"[E] Unable to crossover!\n");

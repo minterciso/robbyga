@@ -1,5 +1,6 @@
 AM_CPPFLAGS = 
-AM_CFLAGS = -Wall
+#AM_CFLAGS = -Wall
+AM_CFLAGS=-Wall -O3 -fexpensive-optimizations
 bin_PROGRAMS = robbyGA
 
 robbyGA_SOURCES = main.c \

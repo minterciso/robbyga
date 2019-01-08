@@ -6,7 +6,8 @@
 #include <gsl/gsl_rng.h>
 
 int start_prng(void){
-  const gsl_rng_type *T = gsl_rng_mt19937;
+//  const gsl_rng_type *T = gsl_rng_mt19937;
+  const gsl_rng_type *T = gsl_rng_random_glibc2;
   if((prng=gsl_rng_alloc(T))==NULL){
       fprintf(stderr,"[E] Error starting PRNG\n");
       return -1;
