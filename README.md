@@ -106,9 +106,6 @@ There are other types of selection and I may be implementing them in the future.
 ### Graphs
 ![selection_graphs](https://raw.githubusercontent.com/minterciso/robbyga/master/src/outputs/selections.png)
 
-# Performance
-I wasn't going for performance on this code, but was going for code readability, so there are a lot of points to increase the performance
-and this will be made in time.
 
 Best regards and have fun
 
