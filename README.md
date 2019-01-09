@@ -8,11 +8,11 @@ The usage of the program is very simple, you can at the command line pass a few 
 Those are:
 
     Usage: ./robbyGA options
-        -h           --help                       This help message
-        -r size      --rows size                  Rows of the world
-        -c size      --cols size                  Cols of the world
-        -s selection --selection selection_type   The selection type, valid values: 0:'tournament',1:'elite',2:'roulette'
-        -o file      --output file                Output csv file with results
+    Options:
+       -h            --help                  This help message
+       -o file       --output file           The output result file (CSV format)
+       -s selection  --selection selection   The type of selection (0:Roulette, 1: Elite, 2: Tournament)
+    Defaults: -o output.csv -s 0
 
 The biggest parameter that can change something is the *selection* parameter, more on this latter.
 
