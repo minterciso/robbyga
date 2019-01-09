@@ -76,13 +76,12 @@ selection type, in the code it's being used as well. I implemented 3 different s
 * Roulette
 
 ### Elite only
-In my experiments I found out that this (at least for the Robby and my implementation of it) presents the best solutions. Basically
-it'll pick up 20% of the best individuals (bigger fitness values) and keep them. The rest it'll be created by selecting at random
+This type of selection basically picks up the 20% best individuals (bigger fitness values) and keep them. The rest it'll be created by selecting at random
 from that 20% best individuals with crossover and mutation.
 
-By using this selection method I was possible to achieve **very** high fitness values right around the 300th generation. Howeverr
-after it kind of stuck on a ~450 fitness value (the maximum is 500). And that's the issue with the elite selection type, you
-may not include some low performing strategy that maybe with some crossover or mutation can yeld good performance.
+By using this type of selection, we reached a local optimal solution of near 0 in the very beginning, and we started evolving around the 400th generation, then it quickly reached the maximum value
+near the 700th generation. This is a very good result, but we may need to increase the mutation rate to get out of the local optimal solution near 0 in the beginning.
+
 
 ### Tournament
 Tournament is very simple, it selected 2 random individuals and returns the id of the biggest fitness one. In this type of
@@ -90,16 +89,16 @@ selection the rest of the population is created based on any individual of the o
 with the elite selection that completelly removes bad individuals, however we don't really give a good chance for good individuals.
 We can bypass this by increasing the amount of individuals on the tournament.
 
-The findings with this type of selection is that around the 400th generation it reaches a local maxima of ~45 fitness and stay there.
+When using this type of selection we were unable to reach very good solutions such as the Elite or the Roulette selection, but we did got good solutions and a somewhat steady increase of the fitness
+after the ~350th generation.
 
 ### Roulette
 This is the standard selection for a GA. It gives a weigh that is proporcional to the fitness of the individual and then
 selects a random number. The individual that has a higher probability to be selected will be selected, but this gives a chance
 for slow performing individuals as well.
 
-As far as I could follow, Mitchell implementation uses this selection method and can get very good results, however my results, on
-my implementation shows that it can reach a local maxima of ~45 of fitness on the 180th generation, and than it keeps there.
-This can be due to an issue on the implementation, and needs to be further checked.
+This gave the best results and a very steady increase right around the 150th generation, after this generation we got a steady increase of fitness till around the 700th generation we reached the maximum
+fitness possible for Robby.
 
 ### Others
 There are other types of selection and I may be implementing them in the future.
