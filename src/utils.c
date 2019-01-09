@@ -6,8 +6,8 @@
 #include <gsl/gsl_rng.h>
 
 int start_prng(void){
-//  const gsl_rng_type *T = gsl_rng_mt19937;
-  const gsl_rng_type *T = gsl_rng_random_glibc2;
+  const gsl_rng_type *T = gsl_rng_mt19937;
+  //const gsl_rng_type *T = gsl_rng_knuthran2002;
   if((prng=gsl_rng_alloc(T))==NULL){
       fprintf(stderr,"[E] Error starting PRNG\n");
       return -1;
@@ -19,6 +19,14 @@ int start_prng(void){
 }
 
 int to_decimal(int *arr, int base, int len){
+  /*
+  int num = 0;
+  num += arr[4];
+  num += arr[3] * base;
+  num += arr[2] * (base*base);
+  num += arr[1] * (base*base*base);
+  num += arr[0] * (base*base*base*base);
+  */
   int power = 1;
   int num = 0;
   int i;

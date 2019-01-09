@@ -85,11 +85,13 @@ int execute_strategy(session *s, robby *r){
         score = -5;
       else
         s->robby_col--;
+      break;
     case S_MOVE_EAST:
       if(r_col == W_COLS-1) // This is a wall
         score = -5;
       else
         s->robby_col++;
+      break;
     case S_STAY_PUT:
       score = 0;
       break;
