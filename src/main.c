@@ -47,6 +47,19 @@ int main(int argc, char **argv){
   fprintf(stdout,"[*] Starting %s\n", prog_name);
   fprintf(stdout,"[*] Options: \n");
   fprintf(stdout,"[*] - Output file: '%s'\n", fname);
+  fprintf(stdout,"[*] - Individual selection: ");
+  switch (selection) {
+    case SELECTION_ELITE:
+      fprintf(stdout,"Elite\n");
+      break;
+    case SELECTION_ROULETTE:
+      fprintf(stdout,"Roulette\n");
+      break;
+    case SELECTION_TOURNAMENT:
+      fprintf(stdout,"Tournament\n");
+    default:
+      break;
+    }
   fprintf(stdout,"[*] Starting PRNG...");
   fflush(stdout);
   if(start_prng() < 0){
