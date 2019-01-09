@@ -22,7 +22,7 @@ void fitness(robby *pop);
  * @brief execute_ga Execute the GA for GA_RUNS executions
  * @return -1 in case of failure, 0 otherwise
  */
-int execute_ga(const char *fname);
+int execute_ga(const char *fname, int selection_type);
 
 int crossover_and_mutate(robby *pop, int selection_type);
 

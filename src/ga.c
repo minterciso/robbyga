@@ -31,6 +31,14 @@ int select_individual(robby *pop, double weighted_sum, int selection_type){
   if(selection_type == SELECTION_ELITE){
       return gsl_rng_uniform_int(prng, POP_ELITE);
     }
+  if(selection_type == SELECTION_TOURNAMENT){
+      // Select at random 2 individuals and return the one with the best fitness
+      int idx1, idx2;
+      idx1 = gsl_rng_uniform_int(prng, POP_SIZE);
+      idx2 = gsl_rng_uniform_int(prng, POP_SIZE);
+      if(pop[idx1].fitness > pop[idx2].fitness) return idx1;
+      return idx2;
+    }
   return -1;
 }
 
@@ -41,19 +49,11 @@ int crossover_and_mutate(robby *pop, int selection_type){
   // Calculate the weighted_sum
   double weighted_sum = 0;
   if(selection_type == SELECTION_ROULETTE){
+      // We rank the weights based on the sorting of the individual, due to the negative fitness values.
       for(int i=0;i<POP_SIZE;i++){
           pop[i].weight = (float)(POP_SIZE-i);
           weighted_sum += pop[i].weight;
       }
-      /*
-      for(int i=0;i<POP_SIZE;i++){
-          if(pop[i].fitness > 0)
-            pop[i].weight = pop[i].fitness;
-          else
-            pop[i].weight = 0.001;
-          weighted_sum += pop[i].weight;
-        }
-        */
     }
 
   // Allocate memory for the old population
@@ -109,7 +109,7 @@ void fitness(robby *pop){
     }
 }
 
-int execute_ga(const char *fname){
+int execute_ga(const char *fname, int selection_type){
   robby *pop = NULL;
   robby *best = NULL;
   FILE *fp = NULL;
@@ -133,7 +133,6 @@ int execute_ga(const char *fname){
   fprintf(stdout,"[OK]\n");
   fflush(stdout);
 
-  int selection_type = SELECTION_ELITE;
   for(int g=0;g<GA_RUNS;g++){
       // Execute the fitness
       fitness(pop);
