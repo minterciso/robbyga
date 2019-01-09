@@ -8,7 +8,7 @@
 gsl_rng *prng;
 
 /**
- * @brief start_prng Start the PRNG based on the Mersenne Twister, this can be overriden with the GSL_RNG_TYPE variable at runtime
+ * @brief start_prng Start the PRNG based on the Mersenne Twister
  * @return 0 if it was possible to start the PRNG, -1 otherwise
  */
 int start_prng(void);
