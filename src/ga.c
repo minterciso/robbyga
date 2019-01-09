@@ -133,7 +133,7 @@ int execute_ga(const char *fname){
   fprintf(stdout,"[OK]\n");
   fflush(stdout);
 
-  int selection_type = SELECTION_ROULETTE;
+  int selection_type = SELECTION_ELITE;
   for(int g=0;g<GA_RUNS;g++){
       // Execute the fitness
       fitness(pop);
