@@ -26,7 +26,7 @@ session* create_sessions(void){
                 }
             }
         }
-      s[i].end_can_amount = s->start_can_amount;
+      s[i].end_can_amount = s[i].start_can_amount;
     }
   return s;
 }
